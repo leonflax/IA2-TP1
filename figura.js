@@ -51,7 +51,7 @@ class Figura {
 
         // Misma figura pero con textura
         push();
-        blendMode(DARKEST); // SIRVEN OVERLAY, DARKEST, BURN
+        blendMode(OVERLAY); // SIRVEN OVERLAY, DARKEST, BURN
         tint(255, 200);
         texture(texturaFigura);
         arc(this.y, 0, radius, radius, 0, TWO_PI, PIE, 100); //circulo

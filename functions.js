@@ -1,7 +1,7 @@
 function preload() {
   textura = loadImage("img/textures/canvas_texture.jpg"); // Textura de fondo
   texturaFigura = loadImage("img/textures/figura_texture.jpg"); // Textura de figura
-  imgPaleta = loadImage("img/soniasaturado.jpeg"); // Referencia de paleta (Cambiar para otra paleta)
+  imgPaleta = loadImage("img/soniasaturado.jpg"); // Referencia de paleta (Cambiar para otra paleta)
 }
 
 function windowResized() {
