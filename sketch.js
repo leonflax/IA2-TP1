@@ -22,12 +22,13 @@ function draw() {
   noStroke();
 
   push();
-  // blendMode(MULTIPLY); //modo de fusion lienzo y figuras
+  //blendMode(MULTIPLY); //modo de fusion lienzo y figuras
   tint(255, 100); // color de lienzo
   image(textura, -width, -height, width * 2, height * 2); //imagen lienzo
   pop();
 
-  for (let i = 0; i < figuras.length; i++) {//leer array
+  for (let i = 0; i < figuras.length; i++) {
+    //leer array
     figuras[i].show(); //mostrar las figuras
   }
   if (figuraActual) {
@@ -35,8 +36,7 @@ function draw() {
   }
 
   push();
-  // image(texturaFigura, -width, -height, width * 2, height * 2); //imagen lienzo
-  
+
   pop();
 }
 
