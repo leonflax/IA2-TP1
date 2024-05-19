@@ -10,56 +10,25 @@ function windowResized() {
 
 function mouseClicked() {
   if (indiceFiguras < maxFiguras) {
-    // si la figura es menor al total de las posibilidades
-    let posY = random(-height / 2 + 90, height / 2 - 90); // no superan margen del lienzo
-    let radio = 150; // radio inicial
-    let rotacion = Math.round(random());
-    // let esEntero = 0;
-    let colorFigura = [];
-    let cantFiguras = int(random(6) + 3);
-    for (let i = 0; i < cantFiguras; i++) {
-      colorFigura.push(paleta.darColor());
+    if (figuraActual) {
+      // Si hay una figura en crecimiento, la fijamos
+      fijarFiguraActual();
+    } else {
+      // Si no hay una figura en crecimiento, creamos una nueva
+      let posY = random(-height / 2 + 90, height / 2 - 90); // no superan margen del lienzo
+      let radInicial = 30; // radio inicial
+      let rotacion = Math.round(random());
+      let colorFigura = [];
+      let cantFiguras = int(random(6) + 3);
+      for (let i = 0; i < cantFiguras; i++) {
+        colorFigura.push(paleta.darColor());
+      }
+
+      figuraActual = new Figura(posY, radInicial, rotacion, colorFigura, cantFiguras); // Crea una nueva figura
+      figuraActual.estado = 'creciente';
     }
-
-    if (Figura.estado === "inicial") {
-      Figura.estado = "intermedio";
-    } else if (Figura.estado === "intermedio") {
-      Figura.estado = "final";
-    } else if (Figura.estado === "final") {
-      Figura.estado = "inicial";
-    }
-
-    console.log(Figura.estado);
-
-    figuraActual = new Figura(posY, radio, rotacion, colorFigura, cantFiguras); // Crea una nueva figura
-
-    figuras.push(figuraActual);
-
-    indiceFiguras++; // Suma a la cuenta de figuras dibujadas hasta el momento
   }
 }
-
-// function mouseDragged() {
-//   if (figuraActual) {
-//     let nuevoRadio = dist(mouseX, mouseY, figuraActual.y, width / 2); // dist del mouse con centro de la fig
-//     // tamaño de figura según la cantidad de figuras
-//     if (cantFiguras < 10) { // grandes menores a 10 fig
-//       figuraActual.rad = constrain(nuevoRadio, 100, 350); // modif radio c/mouse entre 300 y 550
-//     } else if (cantFiguras >= 10 && cantFiguras < 25) { // medianas entre 10 y 25 fig
-//       figuraActual.rad = constrain(nuevoRadio, 40, 140); //modif radio c/mouse entre 140 y 240
-//     } else if (cantFiguras >= 25) { // pequeñas mayores a 25 fig
-//       figuraActual.rad = constrain(nuevoRadio, 20, 100); //modif radio c/mouse entre 20 y 100
-//     }
-//   }
-// }
-
-// function mouseReleased() {//si suelta el mouse
-//   if (figuraActual) { // añade la figura actual al arreglo y la fija
-//     figuras.push(figuraActual);
-//     figuraActual = null; // reinicia la figura actual
-//     cantFiguras++; //suma fig a cantidad total
-//   }
-// }
 
 // Desactiva el click derecho
 function rightClick() {
