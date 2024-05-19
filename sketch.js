@@ -1,29 +1,30 @@
-let textura;
-let texturaFigura;
-let figuras = [];
-let indiceFiguras = 0;
-let maxFiguras = 30; // cantidad max de figuras
-let figuraActual = null; // figura actual
-let imgPaleta;
-let paleta;
-let radInicial = 30;
-let radMax = 350;
+let textura; // Variable para la textura de fondo
+let texturaFigura; // Variable para la textura de las figuras
+let figuras = []; // Array que almacena todas las figuras fijas
+let indiceFiguras = 0; // Contador del número de figuras creadas
+let maxFiguras = 30; // Cantidad máxima de figuras permitidas
+let figuraActual = null; // Referencia a la figura que está en crecimiento
+let imgPaleta; // Imagen para la paleta de colores
+let paleta; // Objeto de la clase Paleta
+let radInicial = 30; // Radio inicial de las figuras
+let radMax = 500; // Radio máximo de las figuras
 
 function setup() {
-  createCanvas(windowHeight / 1.5, windowHeight, WEBGL);
-  paleta = new Paleta(imgPaleta);
+  createCanvas(windowHeight / 1.5, windowHeight, WEBGL); // Crea el lienzo
+  paleta = new Paleta(imgPaleta); // Inicializa la paleta de colores
 }
 
 function draw() {
-  background(200);
-  noStroke();
-
+  background(220, 200, 180);
+  noStroke(); 
+  
+  // Dibujar textura de fondo con transparencia
   push();
-  tint(255, 100); // color de lienzo
-  image(textura, -width, -height, width * 2, height * 2); // imagen lienzo
+  tint(255, 150); // Transparencia del lienzo
+  image(textura, -width / 2, -height / 2, width, height); // Imagen de fondo
   pop();
 
-  // Mostrar todas las figuras en el array
+  // Mostrar todas las figuras fijas del array
   for (let i = 0; i < figuras.length; i++) {
     figuras[i].show();
   }
@@ -31,17 +32,11 @@ function draw() {
   // Mostrar la figura actual en proceso de crecimiento
   if (figuraActual) {
     figuraActual.show();
+    // Si la figura actual alcanza el radio máximo, se fija
     if (figuraActual.radio >= radMax) {
       fijarFiguraActual();
     }
   }
-}
-
-function fijarFiguraActual() {
-  figuraActual.estado = 'fijo';
-  figuras.push(figuraActual);
-  figuraActual = null;
-  indiceFiguras++;
 }
 
 rightClick(); // Desactiva el click derecho
