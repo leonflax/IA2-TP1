@@ -18,7 +18,7 @@ function mouseClicked() {
       let rotacion = Math.round(random());
       let colorFigura = [];
       let cantFiguras = int(random(6) + 3);
-//si la posicion de x es centrada o no segun la cantidad de figuras
+      //si la posicion de x es centrada o no segun la cantidad de figuras
       let posX;
       if (indiceFiguras > 5) {
         if (indiceFiguras % 2 === 0) {
@@ -29,7 +29,7 @@ function mouseClicked() {
       } else {
         posX = random(-width / 2 + 100, width / 2 - 100);
       }
-// color de figura 
+      // color de figura 
       for (let i = 0; i < cantFiguras; i++) {
         if (indiceFiguras < 10) {
           colorFigura.push(color(random(50, 300)));

@@ -7,7 +7,8 @@ let figuraActual = null; // Referencia a la figura que está en crecimiento
 let imgPaleta; // Imagen para la paleta de colores
 let paleta; // Objeto de la clase Paleta
 let radInicial = 30; // Radio inicial de las figuras
-let radMax = 600; // Radio máximo de las figuras
+let radMaxCirculo = 600; // Radio máximo de las figuras
+let radMaxSemi = 1000; // Radio máximo de las figuras
 let posicionesY = []; // Array para almacenar las posiciones Y ocupadas
 
 function setup() {
@@ -33,9 +34,15 @@ function draw() {
   // Mostrar la figura actual en proceso de crecimiento
   if (figuraActual) {
     figuraActual.show();
-    // Si la figura actual alcanza el radio máximo, se fija
-    if (figuraActual.radio >= radMax) {
-      fijarFiguraActual();
+    // Si la figura actual alcanza el radio máximo, se fija segun el tipo de figura
+    if (figuraActual.tipo === 'circulo') {
+      if (figuraActual.radio >= radMaxCirculo) {
+        fijarFiguraActual();
+      }
+    } else if (figuraActual.tipo === 'semicirculo') {
+      if (figuraActual.radio >= radMaxSemi) {
+        fijarFiguraActual();
+      }
     }
   }
 }
