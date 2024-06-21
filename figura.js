@@ -19,11 +19,12 @@ class Figura {
 
     // Si la figura está en estado creciente, incrementa el radio
     if (this.estado === 'creciente') {
+      // console.log('POS Y =' + this.y);
       if(this.tipo === 'circulo'){
-        this.radio += 3; // Ajusta el incremento para aumentar la velocidad de crecimiento
+        this.radio += 2; // Ajusta el incremento para aumentar la velocidad de crecimiento
       }else{
         // El semicirculo crece mas rapido que el circulo
-        this.radio += 6; // Ajusta el incremento para aumentar la velocidad de crecimiento
+        this.radio += 5; // Ajusta el incremento para aumentar la velocidad de crecimiento
       }
     }
 
@@ -42,6 +43,7 @@ class Figura {
         arc(this.y, 0, radius, radius, 0, TWO_PI, PIE, 70); // Dibuja el subcírculo con textura
         pop();
       }
+      
     } else {
       // Si es un semicírculo
       for (let i = 0; i < this.cant; i++) {

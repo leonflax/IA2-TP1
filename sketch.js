@@ -1,5 +1,5 @@
-let textura; // Variable para la textura de fondo
-let texturaFigura; // Variable para la textura de las figuras
+let textura; // textura de fondo
+let texturaFigura; // textura de las figuras
 let figuras = []; // Array que almacena todas las figuras fijas
 let indiceFiguras = 0; // Contador del número de figuras creadas
 let maxFiguras = 30; // Cantidad máxima de figuras permitidas
@@ -17,24 +17,24 @@ let mic;
 let pitch;
 let audioContext;
 let umbral_sonido = 0.03;
-let antesHabiaSonido;
+let antesHabiaSonido; // Esta variable puede no ser necesaria si antesHabiaSonido se inicializa dentro de la función draw()
 let estado = "escucha";
+
+let pitchFrequency = 0; // almacena la frecuencia del pitch
 
 function setup() {
   createCanvas(windowHeight / 1.5, windowHeight, WEBGL); // Crea el lienzo
   paleta = new Paleta(imgPaleta); // Inicializa la paleta de colores
 
-  //inicializo la escucha de sonido
+  // Inicializa la escucha de sonido
   audioContext = getAudioContext();
   mic = new p5.AudioIn();
-  //acá le pido que llame a startPitch
   mic.start(startPitch);
 
   userStartAudio();
 
-  gestorAmp = new GestorSenial(0.05, 0.5);
-  gestorPitch = new GestorSenial(40, 80);
-
+  gestorAmp = new GestorSenial(0.05, 0.5); 
+  gestorPitch = new GestorSenial(40, 80); 
 }
 
 function draw() {
@@ -47,55 +47,20 @@ function draw() {
   image(textura, -width / 2, -height / 2, width, height); // Imagen de fondo
   pop();
 
-  //acá capturo la intesidad(volumen) del sonido
+  // Capturar la intensidad (volumen) del sonido
   let vol = mic.getLevel();
-  //la paso al gestor
-  gestorAmp.actualizar(vol);
+  // Pasar el volumen al gestor
+  gestorAmp.actualizar(vol); 
 
-  //si la intensidad supera un umbral, entonces ha sonido
+  // Determinar si hay sonido según el umbral
   let haySonido = gestorAmp.filtrada > umbral_sonido;
 
   let empezoElSonido = haySonido && !antesHabiaSonido;
-  let terminoElSonido = !haySonido && antesHabiaSonido;
+  // let terminoElSonido = !haySonido && antesHabiaSonido;
 
-  if (empezoElSonido) {
-    marcaInicial = millis();
-  }
-
-  if (estado === "escucha") {
-
-    if (haySonido) {
-      if (millis() > marcaInicial + duracionSonidosCortos) {
-        estado = "largo";
-        xActual = random(width);
-        yActual = random(height);
-        actualizarColor(random(0, 1));
-        diam = 20;
-      }
-    }
-    if (terminoElSonido) {
-      if (millis() < marcaInicial + duracionSonidosCortos) {
-        estado = "corto";
-      }
-    }
-
-  } else if (estado === "largo") {
-    imagenFrente.clear();
-    imagenFrente.push();
-    actualizarColor(gestorPitch.filtrada);
-    imagenFrente.fill(colorActual);
-    imagenFrente.ellipse(xActual, yActual, diam, diam);
-    diam += 3;
-    imagenFrente.pop();
-
-    if (terminoElSonido) {
-      imagenFondo.imageMode(CORNER);
-      imagenFondo.image(imagenFrente, 0, 0);
-      estado = "escucha";
-    }
-  } else if (estado === "corto") {
-    dibujarBanda();
-    estado = "escucha";
+  if (empezoElSonido && indiceFiguras < maxFiguras) {
+    // Si empieza el sonido y aún no se ha alcanzado el máximo de figuras
+    crearNuevaFigura();
   }
 
   // Mostrar todas las figuras fijas del array
@@ -103,22 +68,26 @@ function draw() {
     figuras[i].show();
   }
 
-  // Mostrar la figura actual en proceso de crecimiento
+  // Mostrar y actualizar la figura actual en proceso de crecimiento
   if (figuraActual) {
     figuraActual.show();
-    // Si la figura actual alcanza el radio máximo, se fija segun el tipo de figura
-    if (figuraActual.tipo === 'circulo') {
-      if (figuraActual.radio >= radMaxCirculo) {
-        fijarFiguraActual();
-      }
-    } else if (figuraActual.tipo === 'semicirculo') {
-      if (figuraActual.radio >= radMaxSemi) {
-        fijarFiguraActual();
-      }
+    if (haySonido) {
+      figuraActual.estado = 'creciente';
+      // Actualizar la posición Y según el pitch actualizado
+      let targetY = map(pitchFrequency, 70, 250, height / 2 - 100, -height / 2 + 100);
+      figuraActual.y += (targetY - figuraActual.y) * 0.2; // Factor de suavizado
+
+    } else {
+      figuraActual.estado = 'fijo';
+      fijarFiguraActual();
     }
-  }
+    // Si la figura actual alcanza el radio máximo, se fija según el tipo de figura
+    if (figuraActual && figuraActual.tipo === 'circulo' && figuraActual.radio >= radMaxCirculo) {
+      fijarFiguraActual();
+    } else if (figuraActual && figuraActual.tipo === 'semicirculo' && figuraActual.radio >= radMaxSemi) {
+      fijarFiguraActual();
+    }
+  } 
 
   antesHabiaSonido = haySonido;
 }
-
-rightClick(); // Desactiva el click derecho
