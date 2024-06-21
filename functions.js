@@ -31,7 +31,7 @@ function mouseClicked() {
       }
       // color de figura 
       for (let i = 0; i < cantFiguras; i++) {
-        if (indiceFiguras < 10) {
+        if (indiceFiguras < 5) {
           colorFigura.push(color(random(50, 300)));
         } else {
           colorFigura.push(paleta.darColor());
@@ -60,4 +60,30 @@ function rightClick() {
   document.oncontextmenu = function () {
     return false;
   };
+}
+
+function startPitch() {
+  pitch = ml5.pitchDetection(model_url, audioContext , mic.stream, modelLoaded);
+}
+//--------------------------------------------------------------------
+function modelLoaded() {
+//select('#status').html('Model Loaded');
+getPitch();
+//console.log( "entro aca !" );
+
+}
+//--------------------------------------------------------------------
+function getPitch() {
+
+  //aca capturo la altura tonal del sonido
+  pitch.getPitch(function(err, frequency) {
+    if (frequency) {    	
+      let midiNum = freqToMidi(frequency);
+      //console.log( midiNum );
+
+      gestorPitch.actualizar( midiNum );
+
+    }
+    getPitch();
+  })
 }

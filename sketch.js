@@ -11,9 +11,30 @@ let radMaxCirculo = 600; // Radio máximo de las figuras
 let radMaxSemi = 1000; // Radio máximo de las figuras
 let posicionesY = []; // Array para almacenar las posiciones Y ocupadas
 
+const model_url = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models/models/pitch-detection/crepe/';
+
+let mic;
+let pitch;
+let audioContext;
+let umbral_sonido = 0.03;
+let antesHabiaSonido;
+let estado = "escucha";
+
 function setup() {
   createCanvas(windowHeight / 1.5, windowHeight, WEBGL); // Crea el lienzo
   paleta = new Paleta(imgPaleta); // Inicializa la paleta de colores
+
+  //inicializo la escucha de sonido
+  audioContext = getAudioContext();
+  mic = new p5.AudioIn();
+  //acá le pido que llame a startPitch
+  mic.start(startPitch);
+
+  userStartAudio();
+
+  gestorAmp = new GestorSenial(0.05, 0.5);
+  gestorPitch = new GestorSenial(40, 80);
+
 }
 
 function draw() {
@@ -25,6 +46,57 @@ function draw() {
   tint(255, 150); // Transparencia del lienzo
   image(textura, -width / 2, -height / 2, width, height); // Imagen de fondo
   pop();
+
+  //acá capturo la intesidad(volumen) del sonido
+  let vol = mic.getLevel();
+  //la paso al gestor
+  gestorAmp.actualizar(vol);
+
+  //si la intensidad supera un umbral, entonces ha sonido
+  let haySonido = gestorAmp.filtrada > umbral_sonido;
+
+  let empezoElSonido = haySonido && !antesHabiaSonido;
+  let terminoElSonido = !haySonido && antesHabiaSonido;
+
+  if (empezoElSonido) {
+    marcaInicial = millis();
+  }
+
+  if (estado === "escucha") {
+
+    if (haySonido) {
+      if (millis() > marcaInicial + duracionSonidosCortos) {
+        estado = "largo";
+        xActual = random(width);
+        yActual = random(height);
+        actualizarColor(random(0, 1));
+        diam = 20;
+      }
+    }
+    if (terminoElSonido) {
+      if (millis() < marcaInicial + duracionSonidosCortos) {
+        estado = "corto";
+      }
+    }
+
+  } else if (estado === "largo") {
+    imagenFrente.clear();
+    imagenFrente.push();
+    actualizarColor(gestorPitch.filtrada);
+    imagenFrente.fill(colorActual);
+    imagenFrente.ellipse(xActual, yActual, diam, diam);
+    diam += 3;
+    imagenFrente.pop();
+
+    if (terminoElSonido) {
+      imagenFondo.imageMode(CORNER);
+      imagenFondo.image(imagenFrente, 0, 0);
+      estado = "escucha";
+    }
+  } else if (estado === "corto") {
+    dibujarBanda();
+    estado = "escucha";
+  }
 
   // Mostrar todas las figuras fijas del array
   for (let i = 0; i < figuras.length; i++) {
@@ -45,6 +117,8 @@ function draw() {
       }
     }
   }
+
+  antesHabiaSonido = haySonido;
 }
 
 rightClick(); // Desactiva el click derecho
