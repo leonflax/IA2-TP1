@@ -23,9 +23,21 @@ let monitoreo = true;
 
 let pitchFrequency = 0; // almacena la frecuencia del pitch
 
+let bgGraphics; // pGraphics para la textura de fondo
+let figurasGraphics; // pGraphics para las figuras fijas
+
+
 function setup() {
   createCanvas(windowHeight / 1.5, windowHeight, WEBGL); // Crea el lienzo
   paleta = new Paleta(imgPaleta); // Inicializa la paleta de colores
+
+  // Inicializa pGraphics para la textura de fondo
+  bgGraphics = createGraphics(windowHeight / 1.5, windowHeight);
+  bgGraphics.image(textura, 0, 0, bgGraphics.width, bgGraphics.height);
+
+  // Inicializa pGraphics para las figuras fijas
+  figurasGraphics = createGraphics(windowHeight / 1.5, windowHeight);
+
   // Inicializa la escucha de sonido
   audioContext = getAudioContext();
   mic = new p5.AudioIn();
@@ -43,11 +55,12 @@ function draw() {
   /* console.log(estado);
   console.log(indiceFiguras); */
 
-  // Dibujar textura de fondo con transparencia
-  push();
-  tint(255, 150); // Transparencia del lienzo
-  image(textura, -width / 2, -height / 2, width, height); // Imagen de fondo
-  pop();
+  // Dibujar la textura de fondo desde bgGraphics
+  image(bgGraphics, -width / 2, -height / 2);
+
+  // Dibujar las figuras fijas desde figurasGraphics
+  image(figurasGraphics, -width / 2, -height / 2);
+
 
   // Capturar la intensidad (volumen) del sonido
   let vol = mic.getLevel();
@@ -81,13 +94,13 @@ function draw() {
         70,
         250,
         height / 2 - 100,
-        -height / 2 + 100 
+        -height / 2 + 100
       );
-      
-// Actualiza la posición Y según el pitch actualizado (constrain para que no se salga del lienzo)
-figuraActual.y = constrain(targetY, -height / 2 + 100, height / 2 - 100);
-//figuraActual.y += (targetY - figuraActual.y) * 0.2; // Factor de suavizado
-  
+
+      // Actualiza la posición Y según el pitch actualizado (constrain para que no se salga del lienzo)
+      figuraActual.y = constrain(targetY, -height / 2 + 100, height / 2 - 100);
+      //figuraActual.y += (targetY - figuraActual.y) * 0.2; // Factor de suavizado
+
     } else {
       figuraActual.estado = "fijo";
       fijarFiguraActual();

@@ -74,6 +74,15 @@ function fijarFiguraActual() {
     figuraActual = null; // Reinicia la figura actual para permitir la creación de una nueva figura
     indiceFiguras++; // Incrementa el contador de figuras creadas
     posicionesY = []; // Reinicia el array de posiciones Y ocupadas
+
+    actualizarFigurasGraphics(); // Actualiza la capa gráfica de figuras fijas
+  }
+}
+
+function actualizarFigurasGraphics() {
+  figurasGraphics.clear();
+  for (let i = 0; i < figuras.length; i++) {
+    figuras[i].show(figurasGraphics);
   }
 }
 
